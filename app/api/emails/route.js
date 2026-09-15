@@ -1,5 +1,6 @@
 import { google } from "googleapis";
 import { cookies } from "next/headers";
+import { emailParser } from "@/app/lib/emailParser";
 
 export async function GET() {
     const cookiesStore = await cookies();
@@ -34,7 +35,8 @@ export async function GET() {
             id: message.id,
             format: "full",
         })
-        emails.push(emailResponse.data);
+        const parsedEmail = emailParser(emailResponse.data);
+        emails.push(parsedEmail);
     }
 
 

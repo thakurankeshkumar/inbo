@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function EmailsPage() {
     const [emails, setEmails] = useState([]);
@@ -43,10 +44,12 @@ export default function EmailsPage() {
 
             {emails.map((email) => (
                 <div key={email.id}>
-                    <h3>Message ID: {email.id}</h3>
-                    <pre>
-                        {JSON.stringify(email, null, 2)}
-                    </pre>
+                    <Link href={`/emails/${email.id}`}>
+                        <h3>{email.subject}</h3>
+                        <p>{email.from}</p>
+                        <p>{email.snippet}</p>
+                    </Link>
+
                     <hr />
                 </div>
             ))}

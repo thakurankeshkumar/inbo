@@ -1,6 +1,7 @@
 import { google } from "googleapis";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { emailParser } from "@/app/lib/emailParser";
+import { analyzeHeaders } from "@/app/lib/headerAnalyzer";
 
 export async function GET() {
     const cookiesStore = await cookies();
@@ -33,10 +34,30 @@ export async function GET() {
         const emailResponse = await gmail.users.messages.get({
             userId: "me",
             id: message.id,
-            format: "full",
+            format: "metadata",
+            metadataHeaders: ["From", "To", "Subject", "Date"]
         })
-        const parsedEmail = emailParser(emailResponse.data);
-        emails.push(parsedEmail);
+        const headers = emailResponse.data.payload?.headers || [];
+
+        const getHeader = (name) => {
+            const header = headers.find(
+                (header) =>
+                    header.name.toLowerCase() === name.toLowerCase()
+            );
+
+            return header?.value || "";
+        };
+        // const parsedEmail = emailParser(emailResponse.data);
+        // const headerAnalysis = analyzeHeaders(parsedEmail.headers)
+        emails.push({
+            id: emailResponse.data.id,
+            threadId: emailResponse.data.threadId,
+            from: getHeader("From"),
+            to: getHeader("To"),
+            subject: getHeader("Subject"),
+            date: getHeader("Date"),
+            snippet: emailResponse.data.snippet || "",
+        });
     }
 
 

@@ -1,4 +1,5 @@
 import { google } from "googleapis";
+import { cookies } from "next/headers";
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
@@ -14,6 +15,13 @@ export async function GET(request) {
     );
 
     const { tokens } = await oauth2Client.getToken(code);
-    console.log(tokens);
-    return Response.json({ message: "Google Auth Sucessful" })
+    const cookiesStore = await cookies();
+    cookiesStore.set("google_tokens", JSON.stringify(tokens), {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+    });
+    // console.log(tokens);
+    return Response.redirect("http://localhost:3000/emails")
 }

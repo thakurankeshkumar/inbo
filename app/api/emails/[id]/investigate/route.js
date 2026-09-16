@@ -4,6 +4,7 @@ import { emailParser } from "@/app/lib/emailParser";
 import { analyzeHeaders } from "@/app/lib/headerAnalyzer";
 import { analyzeUrls } from "@/app/lib/urlAnalyzer";
 import { analyzeWithGroq } from "@/app/lib/groq";
+import { geolocateIP } from "@/app/lib/ipGeolocation";
 
 export async function POST(request, { params }) {
     try {
@@ -58,6 +59,10 @@ export async function POST(request, { params }) {
         const headerAnalysis = analyzeHeaders(email.headers);
         const urlAnalysis = analyzeUrls(email.body);
 
+        const sourceIP = headerAnalysis.ips?.[0] || null;
+        const geoLocation = sourceIP ? await geolocateIP(sourceIP) : null;
+
+
         // Prepare compact data for Groq
         const aiAnalysis = await analyzeWithGroq({
             subject: email.subject,
@@ -67,6 +72,8 @@ export async function POST(request, { params }) {
             domains: urlAnalysis.map((item) => item.domain),
             authentication: headerAnalysis.authentication,
         });
+
+        console.log(geoLocation)
 
         return Response.json({
             success: true,
@@ -82,6 +89,7 @@ export async function POST(request, { params }) {
                 security: {
                     headers: headerAnalysis,
                     urls: urlAnalysis,
+                    geoLocation,
                 },
 
                 aiAnalysis,

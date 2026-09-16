@@ -29,6 +29,7 @@ export function getReceivedHeaders(headers) {
 export function analyzeHeaders(headers) {
     const authentication = analyzeAuthentication(headers);
     const received = getReceivedHeaders(headers);
+    const ips = extractIPsFromReceived(received);
     const findings = [];
 
     if (authentication.spf === "fail") {
@@ -53,6 +54,46 @@ export function analyzeHeaders(headers) {
             description: "DMARC Authentication Failed",
         });
     }
+    console.log({ authentication, received, ips, findings })
 
-    return { authentication, received, findings }
+    return { authentication, received, ips, findings }
+}
+
+export function extractIPsFromReceived(receivedHeaders) {
+    if (!Array.isArray(receivedHeaders)) {
+        return [];
+    }
+
+    const ips = [];
+
+    for (const header of receivedHeaders) {
+        // Most useful form in Received headers:
+        // [209.85.220.69]
+        const bracketedMatches =
+            header.match(/\[((?:\d{1,3}\.){3}\d{1,3})\]/g) || [];
+
+        for (const match of bracketedMatches) {
+            const ip = match.slice(1, -1);
+
+            if (isValidIPv4(ip) && !ips.includes(ip)) {
+                ips.push(ip);
+            }
+        }
+    }
+
+    return ips;
+}
+
+function isValidIPv4(ip) {
+    const octets = ip.split(".").map(Number);
+
+    return (
+        octets.length === 4 &&
+        octets.every(
+            (octet) =>
+                Number.isInteger(octet) &&
+                octet >= 0 &&
+                octet <= 255
+        )
+    );
 }

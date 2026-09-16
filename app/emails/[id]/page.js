@@ -3,6 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import dynamic from "next/dynamic";
+
+
+
+
+const SourceMap = dynamic(() => import("@/app/components/SourceMap"), { ssr: false, });
 
 
 // =====================================================
@@ -82,7 +88,7 @@ function EmailDetailsSkeleton() {
         <main className="min-h-screen bg-[#F8FAFD]">
             {/* Header */}
             <header className="border-b border-[#E7EBF2] bg-white">
-                <div className="mx-auto flex h-[82px] max-w-[1400px] items-center px-5 sm:px-8">
+                <div className="mx-auto flex h-20.5 max-w-350 items-center px-5 sm:px-8">
                     <div className="h-8 w-24 animate-pulse rounded bg-[#E8EDF4]" />
                     <div className="ml-auto h-10 w-36 animate-pulse rounded-full bg-[#EEF2F7]" />
                 </div>
@@ -90,7 +96,7 @@ function EmailDetailsSkeleton() {
 
             {/* Content */}
 
-            <div className="mx-auto max-w-[1100px] px-5 py-8 sm:px-8">
+            <div className="mx-auto max-w-275 px-5 py-8 sm:px-8">
                 <div className="h-5 w-28 animate-pulse rounded bg-[#E6EBF2]" />
                 <div className="mt-6 rounded-3xl border border-[#E4E9F0] bg-white p-7">
                     <div className="flex gap-4">
@@ -215,7 +221,7 @@ export default function EmailDetailsPage() {
                 HEADER
             ================================================= */}
             <header className="border-b border-[#E7EBF2] bg-white">
-                <div className="mx-auto flex h-[82px] max-w-[1400px] items-center px-5 sm:px-8">
+                <div className="mx-auto flex h-20.5 max-w-350 items-center px-5 sm:px-8">
                     {/* Logo */}
                     <Link href="/emails" className="flex items-center gap-3">
                         <div className="flex items-end gap-1">
@@ -229,13 +235,7 @@ export default function EmailDetailsPage() {
 
                     <Link href="/emails" className="ml-auto flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-[#52617A] transition hover:bg-[#F3F6FA]">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                            <path
-                                d="M19 12H5M11 18l-6-6 6-6"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            />
+                            <path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                         Back to inbox
                     </Link>
@@ -247,7 +247,7 @@ export default function EmailDetailsPage() {
                 PAGE CONTENT
             ================================================= */}
 
-            <div className="mx-auto max-w-[1100px] px-5 py-7 sm:px-8 sm:py-9">
+            <div className="mx-auto max-w-275 px-5 py-7 sm:px-8 sm:py-9">
                 {/* Breadcrumb */}
                 <div className="mb-6 flex items-center gap-2 text-sm text-[#8A95A8]">
                     <Link href="/emails" className="transition hover:text-[#2453C5]"> Inbox</Link>
@@ -291,7 +291,7 @@ export default function EmailDetailsPage() {
                     ================================================= */}
 
                     <div className="px-6 py-8 sm:px-8">
-                        <div className="max-w-none whitespace-pre-wrap break-words text-[15px] leading-7 text-[#344054]">
+                        <div className="max-w-none whitespace-pre-wrap wrap-break-words text-[15px] leading-7 text-[#344054]">
                             {email.body || "No email body available."}
                         </div>
                     </div>
@@ -305,13 +305,10 @@ export default function EmailDetailsPage() {
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div>
                                 <p className="text-sm font-semibold text-[#24324A]">Ready to investigate?</p>
-                                <p className="mt-1 text-sm text-[#8A95A8]">
-                                    Analyze authentication, URLs and email content with AI.
-                                </p>
+                                <p className="mt-1 text-sm text-[#8A95A8]">Analyze authentication, URLs and email content with AI.</p>
                             </div>
                             <button type="button" onClick={investigateEmail} disabled={investigating}
-                                className="inline-flex min-w-[190px] items-center justify-center gap-2 rounded-xl bg-[#2453C5] px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1E47AA] disabled:cursor-not-allowed disabled:opacity-60">
-
+                                className="inline-flex min-w-47.5 items-center justify-center gap-2 rounded-xl bg-[#2453C5] px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1E47AA] disabled:cursor-not-allowed disabled:opacity-60">
                                 {investigating ? (
                                     <>
                                         <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
@@ -322,18 +319,8 @@ export default function EmailDetailsPage() {
                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                                             <path
                                                 d="M9 3h6M10 3v4l-4.5 8.2A3 3 0 0 0 8.1 20h7.8a3 3 0 0 0 2.6-4.8L14 7V3"
-                                                stroke="currentColor"
-                                                strokeWidth="1.8"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                            />
-
-                                            <path
-                                                d="M8 15h8"
-                                                stroke="currentColor"
-                                                strokeWidth="1.8"
-                                                strokeLinecap="round"
-                                            />
+                                                stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M8 15h8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                                         </svg>
                                         Investigate Email
                                     </>
@@ -358,7 +345,78 @@ export default function EmailDetailsPage() {
                 {/* =================================================
                     INVESTIGATION RESULT
                 ================================================= */}
+                {result?.security?.geoLocation && (
+                    <section className="mt-7 rounded-3xl border border-[#E2E7EF] bg-white p-6 shadow-[0_8px_35px_rgba(31,55,90,0.04)] sm:p-8">
 
+                        <div className="mb-5">
+                            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#2453C5]">NETWORK FORENSICS</p>
+                            <h2 className="mt-2 text-xl font-bold text-[#15284D]">Source Infrastructure</h2>
+                            <p className="mt-2 text-sm text-[#8A95A8]">Network information associated with the observed source IP.</p>
+                        </div>
+
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            <div>
+                                <p className="text-xs font-medium uppercase tracking-wide text-gray-500">IP Address</p>
+                                <p className="mt-1 font-mono text-sm text-gray-900">{result.security.geoLocation.ip}</p>
+                            </div>
+
+                            <div>
+                                <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Location</p>
+                                <p className="mt-1 text-sm text-gray-900">
+                                    {result.security.geoLocation.city},{" "}
+                                    {result.security.geoLocation.region}
+                                </p>
+                            </div>
+
+                            <div>
+                                <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Country</p>
+
+                                <p className="mt-1 text-sm text-gray-900">{result.security.geoLocation.country}</p>
+                            </div>
+
+                            <div>
+                                <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Organization</p>
+
+                                <p className="mt-1 text-sm text-gray-900">{result.security.geoLocation.organization || "Unknown"}</p>
+                            </div>
+
+                            <div>
+                                <p className="text-xs font-medium uppercase tracking-wide text-gray-500">ISP</p>
+
+                                <p className="mt-1 text-sm text-gray-900">
+                                    {result.security.geoLocation.isp || "Unknown"}
+                                </p>
+                            </div>
+
+                            <div>
+                                <p className="text-xs font-medium uppercase tracking-wide text-gray-500">ASN</p>
+
+                                <p className="mt-1 font-mono text-sm text-gray-900">
+                                    {result.security.geoLocation.asn ? `AS${result.security.geoLocation.asn}` : "Unknown"}
+                                </p>
+                            </div>
+
+                        </div>
+
+                        {/* MAP */}
+                        <SourceMap
+                            latitude={result.security.geoLocation.latitude}
+                            longitude={result.security.geoLocation.longitude}
+                            city={result.security.geoLocation.city}
+                            country={result.security.geoLocation.country}
+                            ip={result.security.geoLocation.ip}
+                        />
+
+                        <div className="mt-5 rounded-xl bg-gray-50 p-4">
+                            <p className="text-xs leading-5 text-gray-500">
+                                IP geolocation provides an approximate location of the
+                                network infrastructure associated with the IP. It does not
+                                identify the physical location of the sender.
+                            </p>
+                        </div>
+
+                    </section>
+                )}
                 {result && (
                     <section className="mt-7 space-y-5">
                         {/* =================================================
@@ -541,101 +599,50 @@ export default function EmailDetailsPage() {
                                 {result.security?.urls?.length === 0 ? (
 
                                     <div className="mt-3 rounded-2xl border border-[#E8EDF3] bg-[#FBFCFE] px-5 py-4">
-
-                                        <p className="text-sm text-[#667085]">
-                                            No URLs found in this email.
-                                        </p>
-
+                                        <p className="text-sm text-[#667085]">No URLs found in this email.</p>
                                     </div>
 
                                 ) : (
-
                                     <div className="mt-3 space-y-3">
-
                                         {result.security.urls.map(
                                             (url, index) => (
-
-                                                <div
-                                                    key={index}
-                                                    className="rounded-2xl border border-[#E8EDF3] bg-[#FBFCFE] p-5"
-                                                >
-
+                                                <div key={index} className="rounded-2xl border border-[#E8EDF3] bg-[#FBFCFE] p-5">
                                                     <div className="flex items-start justify-between gap-4">
-
                                                         <div className="min-w-0">
-
-                                                            <p className="text-xs font-semibold uppercase tracking-wide text-[#8A95A8]">
-                                                                Domain
-                                                            </p>
-
+                                                            <p className="text-xs font-semibold uppercase tracking-wide text-[#8A95A8]">Domain</p>
                                                             <p className="mt-1 truncate text-sm font-semibold text-[#253858]">
                                                                 {url.domain || "Unknown"}
                                                             </p>
-
                                                         </div>
-
-
-                                                        <span
-                                                            className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${url.https
-                                                                ? "bg-[#ECFDF3] text-[#16824A]"
-                                                                : "bg-[#FFF1F1] text-[#D92D20]"
-                                                                }`}
-                                                        >
-                                                            {url.https
-                                                                ? "HTTPS"
-                                                                : "HTTP"}
+                                                        <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${url.https
+                                                            ? "bg-[#ECFDF3] text-[#16824A]" : "bg-[#FFF1F1] text-[#D92D20]"}`}>
+                                                            {url.https ? "HTTPS" : "HTTP"}
                                                         </span>
-
                                                     </div>
-
-
                                                     <div className="mt-4 rounded-xl bg-white p-3 ring-1 ring-[#E8EDF3]">
-
                                                         <p className="break-all text-xs leading-5 text-[#667085]">
                                                             {url.url}
                                                         </p>
-
                                                     </div>
 
 
                                                     {url.findings?.length > 0 && (
-
                                                         <div className="mt-3 space-y-2">
-
                                                             {url.findings.map(
                                                                 (finding, findingIndex) => (
-
-                                                                    <div
-                                                                        key={findingIndex}
-                                                                        className="rounded-xl bg-[#FFF8E8] px-4 py-3"
-                                                                    >
-
-                                                                        <p className="text-xs font-semibold text-[#A15C00]">
-                                                                            {finding.severity}
-                                                                        </p>
-
-                                                                        <p className="mt-1 text-xs leading-5 text-[#667085]">
-                                                                            {finding.description}
-                                                                        </p>
-
+                                                                    <div key={findingIndex} className="rounded-xl bg-[#FFF8E8] px-4 py-3">
+                                                                        <p className="text-xs font-semibold text-[#A15C00]">{finding.severity}</p>
+                                                                        <p className="mt-1 text-xs leading-5 text-[#667085]">{finding.description}</p>
                                                                     </div>
-
                                                                 )
                                                             )}
-
                                                         </div>
-
                                                     )}
-
                                                 </div>
-
                                             )
                                         )}
-
                                     </div>
-
                                 )}
-
                             </div>
 
 
@@ -644,61 +651,31 @@ export default function EmailDetailsPage() {
                             ================================================= */}
 
                             <div className="mt-8">
-
-                                <h3 className="text-sm font-bold text-[#253858]">
-                                    Received headers
-                                </h3>
-
-                                <p className="mt-1 text-xs text-[#98A2B3]">
-                                    Mail relay information observed in the message headers.
-                                </p>
-
+                                <h3 className="text-sm font-bold text-[#253858]">Received headers</h3>
+                                <p className="mt-1 text-xs text-[#98A2B3]">Mail relay information observed in the message headers.</p>
 
                                 {result.security?.headers?.received?.length === 0 ? (
-
                                     <div className="mt-3 rounded-2xl border border-[#E8EDF3] bg-[#FBFCFE] px-5 py-4">
-
-                                        <p className="text-sm text-[#667085]">
-                                            No received headers available.
-                                        </p>
-
+                                        <p className="text-sm text-[#667085]">No received headers available.</p>
                                     </div>
 
                                 ) : (
 
                                     <div className="mt-3 space-y-2">
-
                                         {result.security.headers.received.map(
                                             (header, index) => (
-
-                                                <div
-                                                    key={index}
-                                                    className="rounded-2xl bg-[#F7F9FC] p-4"
-                                                >
-
-                                                    <p className="break-words font-mono text-xs leading-6 text-[#667085]">
-                                                        {header}
-                                                    </p>
-
+                                                <div key={index} className="rounded-2xl bg-[#F7F9FC] p-4">
+                                                    <p className="wrap-break-words font-mono text-xs leading-6 text-[#667085]">{header}</p>
                                                 </div>
-
                                             )
                                         )}
-
                                     </div>
-
                                 )}
-
                             </div>
-
                         </div>
-
                     </section>
-
                 )}
-
             </div>
-
         </main>
     );
 }

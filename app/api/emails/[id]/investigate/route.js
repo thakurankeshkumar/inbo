@@ -2,16 +2,23 @@ import { google } from "googleapis";
 import { cookies } from "next/headers";
 import { emailParser } from "@/app/lib/emailParser";
 import { analyzeHeaders } from "@/app/lib/headerAnalyzer";
-
+import { analyzeUrls } from "@/app/lib/urlAnalyzer";
+import { analyzeWithGroq } from "@/app/lib/groq";
 
 export async function POST(request, { params }) {
     try {
         const cookieStore = await cookies();
         const tokenCookie = cookieStore.get("google_tokens");
+
         if (!tokenCookie) {
-            return Response.json({ error: "Not authenticated with google" }, { status: 401 });
-        };
+            return Response.json(
+                { error: "Not authenticated with google" },
+                { status: 401 }
+            );
+        }
+
         const token = JSON.parse(tokenCookie.value);
+
         const oauth2Client = new google.auth.OAuth2(
             process.env.GOOGLE_CLIENT_ID,
             process.env.GOOGLE_CLIENT_SECRET,
@@ -19,6 +26,7 @@ export async function POST(request, { params }) {
         );
 
         oauth2Client.setCredentials(token);
+
         const gmail = google.gmail({
             version: "v1",
             auth: oauth2Client,
@@ -26,14 +34,29 @@ export async function POST(request, { params }) {
 
         const { id } = await params;
 
+        // Get the selected email from Gmail
         const response = await gmail.users.messages.get({
             userId: "me",
             id: id,
             format: "full",
         });
 
+        // Parse the email
         const email = emailParser(response.data);
+
+        // Analyze technical email evidence
         const headerAnalysis = analyzeHeaders(email.headers);
+        const urlAnalysis = analyzeUrls(email.body);
+
+        // Prepare compact data for Groq
+        const aiAnalysis = await analyzeWithGroq({
+            subject: email.subject,
+            sender: email.from,
+            body: email.body,
+            urls: urlAnalysis,
+            domains: urlAnalysis.map((item) => item.domain),
+            authentication: headerAnalysis.authentication,
+        });
 
         return Response.json({
             success: true,
@@ -43,13 +66,27 @@ export async function POST(request, { params }) {
                     from: email.from,
                     to: email.to,
                     subject: email.subject,
-                    date: email.date
+                    date: email.date,
                 },
-                security: headerAnalysis,
+
+                security: {
+                    headers: headerAnalysis,
+                    urls: urlAnalysis,
+                },
+
+                aiAnalysis,
             },
         });
+
     } catch (error) {
-        console.error("Investigation error: ", error);
-        return Response.json({ success: false, error: "Failed to investigate email", }, { status: 500 });
+        console.error("Investigation error:", error);
+
+        return Response.json(
+            {
+                success: false,
+                error: "Failed to investigate email",
+            },
+            { status: 500 }
+        );
     }
 }

@@ -34,6 +34,16 @@ export async function POST(request, { params }) {
 
         const { id } = await params;
 
+        if (!id) {
+            return Response.json(
+                {
+                    success: false,
+                    error: "Email ID is required",
+                },
+                { status: 400 }
+            );
+        }
+
         // Get the selected email from Gmail
         const response = await gmail.users.messages.get({
             userId: "me",
@@ -53,7 +63,7 @@ export async function POST(request, { params }) {
             subject: email.subject,
             sender: email.from,
             body: email.body,
-            urls: urlAnalysis,
+            urls: urlAnalysis.slice(0, 50),
             domains: urlAnalysis.map((item) => item.domain),
             authentication: headerAnalysis.authentication,
         });
@@ -80,6 +90,26 @@ export async function POST(request, { params }) {
 
     } catch (error) {
         console.error("Investigation error:", error);
+
+        if (error?.code === 404) {
+            return Response.json(
+                {
+                    success: false,
+                    error: "Email not found",
+                },
+                { status: 404 }
+            );
+        }
+
+        if (error?.code === 401 || error?.response?.status === 401) {
+            return Response.json(
+                {
+                    success: false,
+                    error: "Google authentication has expired. Please sign in again.",
+                },
+                { status: 401 }
+            );
+        }
 
         return Response.json(
             {

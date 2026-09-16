@@ -11,7 +11,7 @@ Subject: ${emailData.subject}
 Sender: ${emailData.sender}
 
 Body:
-${emailData.body}
+${emailData.body?.slice(0, 15000)}
 
 URLs:
 ${JSON.stringify(emailData.urls)}
@@ -77,5 +77,13 @@ Confidence must be a number between 0 and 1.
         throw new Error("Groq returned an empty response");
     }
 
-    return JSON.parse(content);
+    let result;
+
+    try {
+        result = JSON.parse(content);
+    } catch (error) {
+        throw new Error("Groq returned invalid JSON");
+    }
+
+    return result;
 }

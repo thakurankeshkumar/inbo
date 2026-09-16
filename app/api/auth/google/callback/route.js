@@ -4,6 +4,8 @@ import { cookies } from "next/headers";
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const code = searchParams.get("code");
+    const state = searchParams.get("state");
+
     if (!code) {
         return Response.json({ error: "Authorization code not found" }, { status: 400 });
     }
@@ -14,14 +16,19 @@ export async function GET(request) {
         process.env.GOOGLE_REDIRECT_URI
     );
 
+    const cookieStore = await cookies();
+    const storedState = cookieStore.get("oauth_state")?.value;
+
+    if (!state || !storedState || state !== storedState) { return Response.json({ error: "Invalid OAuth state", }, { status: 400, }); }
     const { tokens } = await oauth2Client.getToken(code);
-    const cookiesStore = await cookies();
-    cookiesStore.set("google_tokens", JSON.stringify(tokens), {
+
+    cookieStore.set("google_tokens", JSON.stringify(tokens), {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         path: "/",
     });
-    // console.log(tokens);
+    cookieStore.delete("oauth_state");
+
     return Response.redirect("http://localhost:3000/emails")
 }

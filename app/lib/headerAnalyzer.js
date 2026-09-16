@@ -15,9 +15,9 @@ export function analyzeAuthentication(headers) {
     const dmarc = value.match(/\bdmarc=(pass|fail|bestguesspass|none|temperror|permerror)\b/);
 
     return {
-        spf: spf?.[1] || "unkown",
-        dkim: dkim?.[1] || "unkown",
-        dmarc: dmarc?.[1] || "unkown",
+        spf: spf?.[1] || "Unknown",
+        dkim: dkim?.[1] || "Unknown",
+        dmarc: dmarc?.[1] || "Unknown",
     };
 }
 

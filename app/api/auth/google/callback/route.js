@@ -30,5 +30,5 @@ export async function GET(request) {
     });
     cookieStore.delete("oauth_state");
 
-    return Response.redirect("http://localhost:3000/emails")
+    return Response.redirect(process.env.REDIRECT_URL);
 }
